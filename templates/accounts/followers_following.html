@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+
+{% block title %}ImgMark | {{username}}'s {{type}}{% endblock title %}
+
+{% block navbar %}
+    {% include "navbar-dark.html" %}
+{% endblock navbar %}
+
+{% block content %}
+    <div class="container-fluid">
+        {% for user in users %}
+            <div class="media">
+                {% thumbnail user.user_profile.profile_picture "128x128" crop="center" as image %}
+                    <img src="{{ image.url }}" alt="{{ user.get_full_name }}" class="img-fluid rounded-circle">
+                {% endthumbnail %}
+                <div class="media-body">
+                    <a href="{{ user.user_profile.get_absolute_url }}">
+                        <h5 class="mt-0">{{ user.get_full_name }}</h5>
+                    </a>
+                </div>
+            </div>
+            <hr>
+        {% endfor %}
+    </div>
+{% endblock content %}

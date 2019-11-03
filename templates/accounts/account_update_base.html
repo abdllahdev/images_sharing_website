@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+
+{% block navbar %}
+    {% include 'navbar-dark.html' %}
+{% endblock navbar %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mt-5">
+        <div class="col-md-3">
+            <ul class="list-group">
+                <a id="edit-account" href="{% url 'account_update' %}" class="list-group-item active">Edit Account</a>
+                <a id="change-password" href="{% url 'password_change' %}" class="list-group-item">Change Password</a>
+            </ul>
+        </div>
+        <div class="col-md-9">
+            {% block update_content %}
+            {% endblock update_content %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

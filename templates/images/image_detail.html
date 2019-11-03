@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load thumbnail %}
+
+{% block title %}Dashboard - ImgMark{% endblock title %}
+
+{% block navbar %}
+    {% include 'navbar-dark.html' %}
+{% endblock navbar %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <div class="card">
+                    {% thumbnail image.image '1024' as im %}
+                        <img src="{{ im.url }}" alt="{{ image.title }}" class="card-img-top" height="512">
+                    {% endthumbnail %}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h3 class="heading-title">{{ object.title }}</h3>
+                <small class="text-muted">{{ object.created }}</small>
+                <p class="text-body">
+                    {{ object.description }}
+                </p>
+                <h3><span class="badge badge-pill badge-success">TOTAL LIKES: <span class="total-likes">{{ object.user_likes.count }}</span></span></h3>
+                <button id="like"
+                        class="btn btn-icon btn-3 {% if request.user in object.user_likes.all %}btn-success{% else %}btn-primary{% endif %}"
+                        data-url="{% url 'image_like' %}"
+                        data-id="{{ object.id }}"
+                        data-action="{% if request.user in object.user_likes.all %}dis{% endif %}like"
+                        csrftoken='{"csrfmiddlewaretoken": "{{ csrf_token }}"}'
+                        type="button">
+                    <span class="btn-inner--icon"><i class="ni ni-like-2"></i></span>
+                    <span class="btn-inner--text">
+                        {% if request.user in object.user_likes.all %}
+                            LIKED
+                        {% else %}
+                            LIKE
+                        {% endif %}
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block extra_scripts %}
+    <script>
+        $(document).ready(function () {
+            var csrftoken = JSON.parse($('#like').attr('csrftoken'));
+            $('#like').on('click', function () {
+               $.ajax({
+                   url: $(this).data('url'),
+                   type: 'post',
+                   dataType: 'json',
+                   data: {
+                       'id': $(this).data('id'),
+                       'action': $(this).data('action'),
+                       'csrfmiddlewaretoken': csrftoken['csrfmiddlewaretoken']
+                   },
+                   success: function (data) {
+                       if (data.status == true) {
+                           var previous_action = $('#like').data('action');
+
+                           if (previous_action == 'like') {
+                               $('#like').addClass('btn-success').removeClass('btn-primary');
+                           } else {
+                               $('#like').addClass('btn-primary').removeClass('btn-success');
+                           }
+                           $('#like').data('action', previous_action == 'like' ? 'dislike' : 'like');
+                           $('.btn-inner--text').text(previous_action == 'like' ? 'LIKED' : 'LIKE');
+
+                           var previous_likes = parseInt($('span.total-likes').text());
+                           $('span.total-likes').text(previous_action == 'like' ? previous_likes + 1 : previous_likes - 1);
+                       }
+                   }
+               });
+            });
+        });
+    </script>
+{% endblock extra_scripts %}

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block navbar %}
+    {% include 'navbar-transparent.html' %}
+{% endblock navbar %}
+
+{% block content %}
+<section class="section section-lg section-hero section-shaped">
+    <div class="shape shape-style-1 bg-gradient-default">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+    <div class="container pt-lg-lg">
+        <div class="row justify-content-center">
+            <div class="col-lg-5">
+                {% block registration_content %}
+                {% endblock registration_content %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}
+
+{% block extra_scripts %}
+    <script>
+        $(document).ready(function () {
+           $('body').addClass('bg-gradient-default')
+        });
+    </script>
+{% endblock extra_scripts %}

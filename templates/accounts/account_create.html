@@ -1,0 +1,112 @@
+{% extends 'registration/registration_base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Sign Up{% endblock title %}
+
+{% block registration_content %}
+<div class="card bg-secondary shadow border-0">
+    <div class="card-header bg-white pb-5">
+        <div class="text-muted text-center mb-3">
+            <small>Sign up with</small>
+        </div>
+        <div class="text-center">
+            <a href="{% url 'social:begin' 'facebook' %}" class="btn btn-neutral btn-icon mr-4">
+                <span class="btn-inner--icon">
+                    <img src="{% static 'img/icons/facebook.svg' %}">
+                </span>
+                <span class="btn-inner--text">Facebook</span>
+            </a>
+        </div>
+    </div>
+    <div class="card-body px-lg-5 py-lg-5">
+        <div class="text-center text-muted mb-4">
+            <small>Or sign up with credentials</small>
+        </div>
+        <form role="form" method="POST" action="{% url 'account_create' %}">
+            {% csrf_token %}
+            {% if form.errors %}
+                <div class="text-danger mb-0">{{ form.non_field_errors }}</div>
+            {% endif %}
+            {% for hidden_field in form.hidden_fields %}
+                {{ hidden_field.errors }}
+                {{ hidden_field }}
+            {% endfor %}
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="text-danger">{{ form.first_name.errors }}</div>                         
+                        {% render_field form.first_name class="form-control form-control-alternative" placeholder="Last name" %}
+                        <div class="text-warning">{{ form.first_name.help_text }}</div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="text-danger">{{ form.last_name.errors }}</div>                         
+                        {% render_field form.last_name class="form-control form-control-alternative" placeholder="Last name" %}
+                        <div class="text-warning">{{ form.last_name.help_text }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group mb-3">
+                <div class="text-danger">{{ form.username.errors }}</div>
+                <div class="input-group input-group-alternative">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="ni ni-single-02"></i></span>
+                    </div>
+                    {% render_field form.username class="form-control" placeholder="Username" %}
+                </div>
+                <div class="text-warning">{{ form.username.help_text }}</div>
+            </div>
+            <div class="form-group mb-3">
+                <div class="text-danger">{{ form.email.errors }}</div>
+                <div class="input-group input-group-alternative">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="ni ni-email-83"></i></span>
+                    </div>
+                    {% render_field form.email class="form-control" placeholder="Email" %}
+                </div>
+                <div class="text-warning">{{ form.email.help_text }}</div>
+            </div>
+            <div class="form-group">
+                <div class="text-danger">{{ form.password1.errors }}</div>
+                <div class="input-group input-group-alternative">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
+                    </div>
+                    {% render_field form.password1 class="form-control" placeholder="Password" %}
+                </div>
+                <div class="text-warning">{{ form.password1.help_text }}</div>
+            </div>
+            <div class="form-group">
+                {% if form.password2.errors %}
+                    <div class="text-danger">{{ form.password2.errors }}</div>
+                {% endif %}
+                <div class="input-group input-group-alternative">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
+                    </div>
+                    {% render_field form.password2 class="form-control" placeholder="Password Confirmation" %}
+                </div>
+                {% if form.password2.help_text %}
+                    <div class="text-danger">{{ form.password2.help_text }}</div>
+                {% endif %}
+            </div>
+            <div class="row my-4">
+                <div class="col-12">
+                <div class="custom-control custom-control-alternative custom-checkbox">
+                    <input class="custom-control-input" id="customCheckRegister" type="checkbox">
+                    <label class="custom-control-label" for="customCheckRegister">
+                    <span>I agree with the
+                        <a href="#">Privacy Policy</a>
+                    </span>
+                    </label>
+                </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary mt-4 pull-right">Create account</button>
+        </form>
+    </div>
+</div>
+{% endblock registration_content %}
+    

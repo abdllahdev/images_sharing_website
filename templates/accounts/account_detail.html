@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+
+{% block title %}ImgMark | {{ object.username }}{% endblock title %}
+
+{% block navbar %}
+    {% include "navbar-dark.html" %}
+{% endblock navbar %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <div class="card">
+                    {% thumbnail object.user_profile.profile_picture '1024' as im %}
+                        <img src="{{ im.url }}" alt="{{ object.get_full_name }}" class="card-img-top" height="512">
+                    {% endthumbnail %}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h3 class="heading-title">{{ object.get_full_name }}</h3>
+                <a href="{% url 'account_followers_following' username=object.username type='followers' %}">
+                    <h3><span class="badge badge-pill badge-success">FOLLOWERS: <span class="total-followers">{{ object.followers.count }}</span></span></h3>
+                </a>
+                <a href="{% url 'account_followers_following' username=object.username type='following' %}">
+                    <h3><span class="badge badge-pill badge-success">FOLLOWINGS: <span>{{ object.following.count }}</span></span></h3>
+                </a>
+                {% if request.user != object %}
+                    <button id="follow"
+                            class="btn btn-icon btn-3 {% if request.user in object.followers.all %}btn-success{% else %}btn-primary{% endif %}"
+                            data-url="{% url 'account_follow' %}"
+                            data-id="{{ object.id }}"
+                            data-action="{% if request.user in object.followers.all %}un{% endif %}follow"
+                            csrftoken='{"csrfmiddlewaretoken": "{{ csrf_token }}"}'
+                            type="button">
+                        <span class="btn-inner--icon"><i class="ni ni-like-2"></i></span>
+                        <span class="btn-inner--text">
+                            {% if request.user in object.followers.all %}
+                                FOLLOWED
+                            {% else %}
+                                FOLLOW
+                            {% endif %}
+                        </span>
+                    </button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block extra_scripts %}
+    <script>
+        $(document).ready(function () {
+            var csrftoken = JSON.parse($('#follow').attr('csrftoken'));
+            $('#follow').on('click', function () {
+               $.ajax({
+                   url: $(this).data('url'),
+                   type: 'post',
+                   dataType: 'json',
+                   data: {
+                       'id': $(this).data('id'),
+                       'action': $(this).data('action'),
+                       'csrfmiddlewaretoken': csrftoken['csrfmiddlewaretoken']
+                   },
+                   success: function (data) {
+                       if (data.status == true) {
+                           var previous_action = $('#follow').data('action');
+
+                           if (previous_action == 'follow') {
+                               $('#follow').addClass('btn-success').removeClass('btn-primary');
+                           } else {
+                               $('#follow').addClass('btn-primary').removeClass('btn-success');
+                           }
+                           $('#follow').data('action', previous_action == 'follow' ? 'unfollow' : 'follow');
+                           $('.btn-inner--text').text(previous_action == 'follow' ? 'FOLLOWED' : 'FOLLOW');
+
+                           var previous_followers = parseInt($('span.total-followers').text());
+                           $('span.total-followers').text(previous_action == 'follow' ? previous_followers + 1 : previous_followers - 1);
+                       }
+                   }
+               });
+            });
+        });
+    </script>
+{% endblock extra_scripts %}

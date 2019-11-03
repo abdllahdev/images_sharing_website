@@ -1,0 +1,103 @@
+{% extends 'accounts/account_update_base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% load thumbnail %}
+
+{% block title %}Update account{% endblock title %}
+
+{% block update_content %}
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title text-uppercase text-muted mb-0">Update Account</h5>
+        <form action="{% url 'account_update' %}" method="POST" class="mt-3" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% if profile_update_form.errors %}
+                <div class="text-danger mb-0">{{ profile_update_form.non_field_errors }}</div>
+            {% endif %}
+            {% for hidden_field in profile_update_form.hidden_fields %}
+                {{ hidden_field.errors }}
+                {{ hidden_field }}
+            {% endfor %}
+            {% if account_update_form.errors %}
+                <div class="text-danger mb-0">{{ account_update_form.non_field_errors }}</div>
+            {% endif %}
+            {% for hidden_field in account_update_form.hidden_fields %}
+                {{ hidden_field.errors }}
+                {{ hidden_field }}
+            {% endfor %}
+            <div class="text-center mb-5">
+                {% thumbnail request.user.profile.profile_picture "128x128" crop="center" as image %}
+                    <img src="{{ image.url }}" alt="{{ request.user.get_full_name }}" class="img-fluid rounded-circle shadow">
+                {% endthumbnail %}
+            </div>
+            <div id="profile-picture" class="form-group">
+                <label id="{{ profile_update_form.profile_picture.auto_id }}_label" for="{{ profile_update_form.profile_picture.auto_id }}" class="form-label-control form-control-label-alternative">{{ profile_update_form.profile_picture.label }}</label>
+                {% if profile_update_form.profile_picture.errors %}
+                    <div class="text-danger">{{ profile_update_form.profile_picture.errors }}</div>
+                {% endif %}
+                {% render_field profile_update_form.profile_picture class="form-control form-control-alternative" placeholder="Profile picture" %}
+                {% if profile_update_form.profile_picture.help_text %}
+                    <div class="text-warning">{{ profile_update_form.profile_picture.help_text }}</div>
+                {% endif %}
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ account_update_form.first_name.auto_id }}" class="form-label-control form-control-label-alternative">{{ account_update_form.first_name.label }}</label>
+                        {% if account_update_form.first_name.errors %}
+                            <div class="text-danger">{{ account_update_form.first_name.errors }}</div>
+                        {% endif %}
+                        {% render_field account_update_form.first_name class="form-control form-control-alternative" placeholder="First name" %}
+                        {% if account_update_form.first_name.help_text %}
+                            <div class="text-warning">{{ account_update_form.first_name.help_text }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ account_update_form.last_name.auto_id }}" class="form-label-control form-control-label-alternative">{{ account_update_form.last_name.label }}</label>
+                        {% if account_update_form.last_name.errors %}
+                            <div class="text-danger">{{ account_update_form.last_name.errors }}</div>
+                        {% endif %}
+                        {% render_field account_update_form.last_name class="form-control form-control-alternative" placeholder="Last name" %}
+                        {% if account_update_form.last_name.help_text %}
+                            <div class="text-warning">{{ account_update_form.last_name.help_text }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="{{ profile_update_form.date_of_birth.auto_id }}" class="form-label-control form-control-label-alternative">{{ profile_update_form.date_of_birth.label }}</label>
+                {% if profile_update_form.date_of_birth.errors %}
+                    <div class="text-danger">{{ profile_update_form.date_of_birth.errors }}</div>
+                {% endif %}
+                {% render_field profile_update_form.date_of_birth class="form-control form-control-alternative" placeholder="Date of birth" %}
+                {% if profile_update_form.date_of_birth.help_text %}
+                    <div class="text-warning">{{ profile_update_form.date_of_birth.help_text }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ account_update_form.username.auto_id }}" class="form-label-control form-control-label-alternative">{{ account_update_form.username.label }}</label>
+                {% if account_update_form.username.errors %}
+                    <div class="text-danger">{{ account_update_form.username.errors }}</div>
+                {% endif %}
+                {% render_field account_update_form.username class="form-control form-control-alternative" placeholder="Username" %}
+                {% if account_update_form.username.help_text %}
+                    <div class="text-warning">{{ account_update_form.username.help_text }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ account_update_form.email.auto_id }}" class="form-label-control form-control-label-alternative">{{ account_update_form.email.label }}</label>
+                {% if account_update_form.email.errors %}
+                    <div class="text-danger">{{ account_update_form.email.errors }}</div>
+                {% endif %}
+                {% render_field account_update_form.email class="form-control form-control-alternative" placeholder="Email" %}
+                {% if account_update_form.email.help_text %}
+                    <div class="text-warning">{{ account_update_form.email.help_text }}</div>
+                {% endif %}
+            </div>
+            <button type="submit" class="btn btn-primary pull-right">Update</button>
+        </form>
+    </div>
+</div>
+{% endblock update_content %}

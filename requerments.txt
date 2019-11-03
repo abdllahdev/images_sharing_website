@@ -1,0 +1,6 @@
+django
+django-widget-tweaks
+social-auth-app-django
+sorl-thumbnail
+Pillow
+

@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}Create bookmark{% endblock title %}
+
+{% block navbar %}
+    {% include 'navbar-dark.html' %}
+{% endblock navbar %}
+
+{% block content %}
+    <div class="container">
+        <form class="row mt-5" action="{% url 'image_create' %}" method="POST">
+            {% csrf_token %}
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="{{ form.url.auto_id }}" class="form-label-control form-control-label-alternative">URL</label>
+                    {% if form.url.errors %}
+                        <div class="text-danger">{{ form.url.errors }}</div>
+                    {% endif %}
+                    {% render_field form.url class="form-control form-control-alternative" placeholder="URL" %}
+                    {% if form.url.help_text %}
+                        <div class="text-warning">{{ form.url.help_text }}</div>
+                    {% endif %}
+                </div>
+                <div id="img-preview" class="text-center" style="height: 263px; background-color: gainsboro;">
+                    <h3 class="heading-title text-warning">Enter URL to load your image</h3>
+                </div>
+            </div>
+            <div class="col-md-6">
+                {% if form.errors %}
+                    <div class="text-danger mb-0">{{ form.non_field_errors }}</div>
+                {% endif %}
+                {% for hidden_field in form.hidden_fields %}
+                    {{ hidden_field.errors }}
+                    {{ hidden_field }}
+                {% endfor %}
+                <div class="form-group">
+                    <label for="{{ form.title.auto_id }}" class="form-label-control form-control-label-alternative">{{ form.title.label }}</label>
+                    {% if form.title.errors %}
+                        <div class="text-danger">{{ form.title.errors }}</div>
+                    {% endif %}
+                    {% render_field form.title class="form-control form-control-alternative" placeholder="Title" %}
+                    {% if form.title.help_text %}
+                        <div class="text-warning">{{ form.title.help_text }}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.description.auto_id }}" class="form-label-control form-control-label-alternative">{{ form.description.label }}</label>
+                    {% if form.description.errors %}
+                        <div class="text-danger">{{ form.description.errors }}</div>
+                    {% endif %}
+                    {% render_field form.description class="form-control form-control-alternative" placeholder="Description" %}
+                    {% if form.description.help_text %}
+                        <div class="text-warning">{{ form.description.help_text }}</div>
+                    {% endif %}
+                </div>
+                <button type="submit" class="btn btn-primary mt-4 pull-right">BOOKMARK IT</button>
+            </div>
+        </form>
+    </div>
+{% endblock content %}
+
+{% block extra_scripts %}
+    <script>
+        $(document).ready(function () {
+            if (!$('#id_url').val()) {
+                $('#id_url').change(function () {
+                    var val = $(this).val();
+                    var valid_extensions = ['png', 'jpg', 'jpeg'];
+                    var extension = val.split('.').slice(-1)[0]
+                    var exist = false;
+                    console.log(val);
+                    console.log(extension);
+                    for (var i = 0; i < valid_extensions.length; i++) {
+                        if (extension == valid_extensions[i]) {
+                            exist = true;
+                        }
+                    }
+                    if (exist == true) {
+                        $('#img-preview').children().remove();
+                        $('#img-preview').css('background-image', 'url(' + val + ')');
+                        $('#img-preview').css('background-size', 'cover');
+                    } else {
+                        alert('Invalid URL');
+                    }
+                });
+            } else {
+                $('#img-preview').css('background-image', 'url(' + val + ')');
+                $('#img-preview').css('background-size', 'cover');
+            }
+        });
+    </script>
+{% endblock extra_scripts %}
