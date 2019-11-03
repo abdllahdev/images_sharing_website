@@ -9,7 +9,7 @@ Features:
   <li>Social login using OAuth</li>
 </ul>
 
-Technologies and Libraries used:
+Technologies and libraries used:
 <ul>
   <li>Django</li>
   <li>Sorl Thumbnail</li>
